@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALHAR Residency — Digital Bill &amp; Receipt</title>
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="malhar.css">
+</head>
+
+<body>
+
+    <div class="app-container">
+
+        <!-- Top Action Toolbar -->
+        <header class="control-bar">
+            <div class="bar-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2b580c" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+                MALHAR Residency Digital Bill
+            </div>
+            <div class="btn-group">
+                <div
+                    style="display: flex; align-items: center; gap: 6px; background: #f8f9fa; padding: 4px 10px; border-radius: 8px; border: 1px solid #d0d5dd;">
+                    <label for="hotelTitleInput"
+                        style="font-size: 0.82rem; font-weight: 700; color: #333; white-space: nowrap;">Hotel
+                        Title:</label>
+                    <input type="text" id="hotelTitleInput" value="MALHAR RESIDENCY"
+                        oninput="updateHeaderTitle(this.value)"
+                        style="border: 1px solid #ccc; border-radius: 6px; padding: 4px 8px; font-size: 0.85rem; font-weight: 700; width: 170px;">
+                </div>
+                <button class="btn btn-secondary" onclick="addRow()">+ Add New Row</button>
+                <button class="btn btn-danger" onclick="clearRows()">Clear Table</button>
+                <button class="btn btn-primary" onclick="downloadPDF()">Download Bill (PDF)</button>
+            </div>
+        </header>
+
+        <!-- Main Receipt Document -->
+        <div class="receipt-wrapper" id="receiptBox">
+
+            <!-- Top Facilities & Contact -->
+            <div class="receipt-top-row">
+                <div>
+                    24 hours Hot Water<br>
+                    Cable TV Available
+                </div>
+                <div>
+                    M.:9699610325
+                </div>
+            </div>
+
+            <!-- Brand Header with Digital Lotus Logo -->
+            <header class="brand-header">
+                <div class="logo-wrap">
+                    <svg width="68" height="60" viewBox="0 0 100 85" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Lotus Flowers Base -->
+                        <path d="M50 68 C25 68 10 50 15 35 C25 45 40 55 50 68 Z" fill="#2b580c" />
+                        <path d="M50 68 C75 68 90 50 85 35 C75 45 60 55 50 68 Z" fill="#2b580c" />
+                        <path d="M50 68 C30 55 20 30 35 15 C45 32 48 50 50 68 Z" fill="#3a7510" />
+                        <path d="M50 68 C70 55 80 30 65 15 C55 32 52 50 50 68 Z" fill="#3a7510" />
+                        <path d="M50 68 C40 45 42 20 50 8 C58 20 60 45 50 68 Z" fill="#1b3b05" />
+
+                        <!-- Meditating Figure Silhouette -->
+                        <circle cx="50" cy="28" r="4.5" fill="#ffffff" />
+                        <path
+                            d="M 44 42 C 44 33, 56 33, 56 42 L 54 48 C 58 48, 62 52, 59 55 C 55 58, 45 58, 41 55 C 38 52, 42 48, 46 48 Z"
+                            fill="#ffffff" />
+                    </svg>
+                    <div
+                        style="font-size: 0.65rem; font-weight: 700; color: #2b580c; letter-spacing: 0.5px; margin-top: -2px;">
+                        Feel Like Home</div>
+                </div>
+
+                <h1 id="brandTitleHeader" class="brand-title">MALHAR RESIDENCY</h1>
+                <div class="brand-sub">BUDGET HOTEL CLEAN ROOMS &amp; TOILETS | FAMILY ROOMS</div>
+                <div class="brand-addr">Sr. No. 389, Opp Jilha Parishad, Behind Bholahi Mata Mandir, Mangalwar Peth,
+                    Pune 411001</div>
+            </header>
+
+            <!-- Bill No Row -->
+            <div class="bill-no-row">
+                <span>Bill No.</span>
+                <input type="text" id="billNo" value="114" class="inline-input-sm"
+                    style="margin-left: 8px; width: 90px;">
+            </div>
+
+            <!-- Guest & Stay Details Grid -->
+            <div class="info-grid">
+                <div class="info-col-left">
+                    <div class="info-row" style="align-items: flex-start;">
+                        <label>Name :</label>
+                        <textarea id="guestName" rows="2"
+                            style="width: 100%; border: none; border-bottom: 1px dashed #666; font-family: inherit; font-size: 0.88rem; font-weight: 600; outline: none; resize: none; background: transparent;">Verma Shrawan Kumar Krishanaprasad</textarea>
+                    </div>
+                </div>
+
+                <div class="info-col-right">
+                    <div class="info-row">
+                        <label>Room No.</label>
+                        <input type="text" id="roomNo" value="103" class="inline-input-sm">
+                        <label style="margin-left: 10px;">No of Person</label>
+                        <input type="number" id="numPersons" value="1" class="inline-input-sm" style="width: 50px;">
+                    </div>
+
+                    <div class="info-row">
+                        <label>Arrived at</label>
+                        <div class="datetime-inline">
+                            <input type="time" id="arriveTime" value="21:20">
+                            <label>on</label>
+                            <input type="date" id="arriveDate" value="2026-09-02">
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <label>Left at</label>
+                        <div class="datetime-inline">
+                            <input type="time" id="leftTime" value="09:11">
+                            <label>on</label>
+                            <input type="date" id="leftDate" value="2026-09-03">
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <label>Rate per day.</label>
+                        <input type="number" id="ratePerDay" value="1400" oninput="updateRatePerDay(this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bill Particulars Table -->
+            <div class="bill-table-container">
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 22%;">A/c. Date</th>
+                            <th style="width: 56%;">Particulars</th>
+                            <th class="col-rupees" style="width: 15%;">Rupees</th>
+                            <th class="col-ps col-ps-head" style="width: 7%;">Ps.</th>
+                            <th class="col-action"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="billTableBody">
+                        <!-- Dynamic rows will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="add-row-container">
+                <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="addRow()">+ Add
+                    Particular Row</button>
+            </div>
+
+            <!-- Checkout Note & Total Display -->
+            <div class="checkout-note-row">
+                <div>Check out time 12 noon</div>
+                <div class="total-display">
+                    <span>Total :</span>
+                    <span style="font-size: 1.2rem; font-weight: 800; color: #000;" id="totalAmount">1400</span>
+                </div>
+            </div>
+
+            <!-- Footer Notes & Signature -->
+            <footer class="footer-section">
+                <div class="footer-notes">
+                    1) Please obtain office Receipt for all payment<br>
+                    Subject to Pune Jurisdiction only.
+                </div>
+
+                <div class="signature-box">
+                    <div class="signature-title">For MALHAR RESIDENCY</div>
+                    <div class="signature-graphic">
+                        <svg width="120" height="38" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M 12 32 C 10 18, 18 5, 24 16 C 28 24, 30 10, 36 22 C 40 28, 44 14, 52 24 C 60 30, 68 12, 75 22 C 82 28, 92 18, 105 28"
+                                fill="none" stroke="#1d3557" stroke-width="2.4" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <text x="25" y="32" font-family="'Brush Script MT', cursive, sans-serif" font-size="24"
+                                fill="#1d3557" font-weight="bold">Adi</text>
+                        </svg>
+                    </div>
+                    <div class="signature-label">Authorised Signatory</div>
+                </div>
+            </footer>
+
+        </div>
+
+    </div>
+
+    <script src="malhar.js"></script>
+</body>
+
+</html>
